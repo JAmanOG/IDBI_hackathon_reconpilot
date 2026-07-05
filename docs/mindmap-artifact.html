@@ -1,0 +1,327 @@
+<title>IDBI Innovate 2026 — Battle Map</title>
+<style>
+  :root{
+    --bg:#fafbfc; --panel:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#dfe4ea;
+    --chip-bg:#eef1f5; --accent:#1c2f4a;
+    --t1:#1971c2; --t2:#e8590c; --t3:#2f9e44; --t4:#e03131; --t5:#7048e8; --tc:#0c8599;
+    --gold:#b08900;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12161c; --panel:#1a2028; --ink:#e6eaf0; --muted:#96a0ad; --line:#2c3540;
+      --chip-bg:#232b35; --accent:#9db8dd;
+      --t1:#5aa2e0; --t2:#f0824a; --t3:#5cbf70; --t4:#ef6b6b; --t5:#9d7bf0; --tc:#4db3c4;
+      --gold:#d4b24a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12161c; --panel:#1a2028; --ink:#e6eaf0; --muted:#96a0ad; --line:#2c3540;
+    --chip-bg:#232b35; --accent:#9db8dd;
+    --t1:#5aa2e0; --t2:#f0824a; --t3:#5cbf70; --t4:#ef6b6b; --t5:#9d7bf0; --tc:#4db3c4;
+    --gold:#d4b24a;
+  }
+  :root[data-theme="light"]{
+    --bg:#fafbfc; --panel:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#dfe4ea;
+    --chip-bg:#eef1f5; --accent:#1c2f4a;
+    --t1:#1971c2; --t2:#e8590c; --t3:#2f9e44; --t4:#e03131; --t5:#7048e8; --tc:#0c8599;
+    --gold:#b08900;
+  }
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--ink);
+    font:16px/1.55 "Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+    margin:0; padding:0 16px 64px;
+  }
+  .wrap{max-width:960px; margin:0 auto}
+  header{padding:40px 0 8px}
+  .eyebrow{
+    font-family:ui-monospace,"Cascadia Mono","Menlo",monospace; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 10px;
+  }
+  h1{font-size:clamp(26px,4.5vw,38px); font-weight:700; letter-spacing:-.02em; margin:0 0 6px; text-wrap:balance}
+  .sub{color:var(--muted); margin:0; max-width:64ch}
+  .meta{display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 0}
+  .chip{
+    font-family:ui-monospace,"Cascadia Mono","Menlo",monospace; font-size:12.5px;
+    font-variant-numeric:tabular-nums;
+    background:var(--chip-bg); border:1px solid var(--line); border-radius:4px;
+    padding:3px 9px; color:var(--ink); white-space:nowrap;
+  }
+  .chip.warn{border-color:var(--gold); color:var(--gold); font-weight:600}
+
+  /* verdict strip */
+  .verdict{margin:28px 0 8px}
+  .verdict h2{font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600; margin:0 0 10px}
+  .ranks{display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr)); gap:8px}
+  .rank{
+    display:flex; flex-direction:column; gap:2px;
+    background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--tone,var(--line));
+    border-radius:6px; padding:10px 12px;
+  }
+  .rank b{font-size:14px}
+  .rank .pos{
+    font-family:ui-monospace,monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.1em; text-transform:uppercase;
+  }
+  .rank .why{font-size:12.5px; color:var(--muted); line-height:1.4}
+
+  /* controls */
+  .controls{display:flex; gap:8px; margin:26px 0 14px; align-items:center}
+  .controls button{
+    font:600 13px/1 inherit; color:var(--ink); background:var(--panel);
+    border:1px solid var(--line); border-radius:6px; padding:8px 14px; cursor:pointer;
+  }
+  .controls button:hover{border-color:var(--accent)}
+  .controls button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .hint{font-size:12.5px; color:var(--muted)}
+
+  /* tree */
+  details.branch{
+    background:var(--panel); border:1px solid var(--line); border-left:5px solid var(--tone);
+    border-radius:8px; margin:0 0 12px; overflow:hidden;
+  }
+  details.branch>summary{
+    display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+    padding:14px 18px; cursor:pointer; list-style:none;
+  }
+  details.branch>summary::-webkit-details-marker{display:none}
+  details.branch>summary:focus-visible{outline:2px solid var(--tone); outline-offset:-2px}
+  .tno{
+    font-family:ui-monospace,monospace; font-weight:700; font-size:13px;
+    color:var(--tone); letter-spacing:.08em; white-space:nowrap;
+  }
+  .tname{font-weight:700; font-size:17px; letter-spacing:-.01em}
+  .tline{font-size:13.5px; color:var(--muted); flex:1 1 100%; margin-top:-4px}
+  summary .caret{margin-left:auto; color:var(--muted); transition:transform .15s ease; align-self:center}
+  details[open]>summary .caret{transform:rotate(90deg)}
+  @media (prefers-reduced-motion: reduce){ summary .caret{transition:none} }
+  .badge{
+    font-family:ui-monospace,monospace; font-size:11px; font-weight:700; letter-spacing:.08em;
+    color:var(--tone); border:1px solid var(--tone); border-radius:99px; padding:2px 9px; white-space:nowrap;
+  }
+  .branch-body{padding:2px 18px 16px; border-top:1px solid var(--line)}
+
+  details.group{margin:10px 0 0}
+  details.group>summary{
+    cursor:pointer; list-style:none; display:flex; align-items:center; gap:8px;
+    font-size:12px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; color:var(--muted);
+    padding:4px 0;
+  }
+  details.group>summary::-webkit-details-marker{display:none}
+  details.group>summary::before{content:"▸"; color:var(--tone); font-size:11px}
+  details[open].group>summary::before{content:"▾"}
+  details.group>summary:focus-visible{outline:2px solid var(--tone); outline-offset:2px}
+  .group ul{margin:6px 0 4px; padding:0 0 0 18px; border-left:2px solid var(--line); list-style:none; display:flex; flex-direction:column; gap:7px}
+  .group li{font-size:14.5px; max-width:72ch}
+  .group li b{font-weight:650}
+  .k{
+    font-family:ui-monospace,monospace; font-size:12.5px; font-variant-numeric:tabular-nums;
+    background:var(--chip-bg); border-radius:3px; padding:1px 6px; white-space:nowrap;
+  }
+  .pro{color:var(--t3); font-weight:700} .con{color:var(--t4); font-weight:700}
+
+  footer{margin-top:36px; border-top:1px solid var(--line); padding-top:18px}
+  footer h2{font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600; margin:0 0 8px}
+  footer ol{margin:0; padding-left:20px; color:var(--muted); font-size:14px; display:flex; flex-direction:column; gap:4px}
+  footer code{font-family:ui-monospace,monospace; font-size:13px; color:var(--ink)}
+</style>
+
+<div class="wrap">
+<header>
+  <p class="eyebrow">Battle map · researched 04 Jul 2026</p>
+  <h1>IDBI Innovate 2026 — five tracks, one plan</h1>
+  <p class="sub">Every branch below distills the official brief, the AMA clarifications, and a cited research dossier. Expand a track to see the decided build, its compliance spine, and the demo script.</p>
+  <div class="meta">
+    <span class="chip">₹15 lakh pool · ₹2L / track winner</span>
+    <span class="chip warn">Registration closes 9 Jul 2026</span>
+    <span class="chip">AWS sandbox · synthetic data</span>
+    <span class="chip">SEBI · RBI · IRDAI · DPDP</span>
+    <span class="chip">IDBI: no AI in production yet</span>
+  </div>
+</header>
+
+<section class="verdict" aria-label="Ranked recommendation">
+  <h2>Where the odds are — ranked</h2>
+  <div class="ranks">
+    <div class="rank" style="--tone:var(--t5)"><span class="pos">Bet 1 · Track 05</span><b>ReconPilot</b><span class="why">Mentors gave the rubric away; ₹100/day penalty clock is the ROI</span></div>
+    <div class="rank" style="--tone:var(--t4)"><span class="pos">Bet 2 · Track 04</span><b>Default EWS</b><span class="why">Risk-team vocabulary is a moat few teams hold</span></div>
+    <div class="rank" style="--tone:var(--t1)"><span class="pos">Bet 3 · Track 01</span><b>Wealth Avatar</b><span class="why">Real whitespace + stage drama; most moving parts</span></div>
+    <div class="rank" style="--tone:var(--t2)"><span class="pos">Bet 4 · Track 02</span><b>Prospect Assist</b><span class="why">Solid architecture; less differentiated field</span></div>
+    <div class="rank" style="--tone:var(--t3)"><span class="pos">Bet 5 · Track 03</span><b>MSME Health</b><span class="why">Most crowded; enter only with credit-domain depth</span></div>
+  </div>
+</section>
+
+<div class="controls">
+  <button type="button" id="expand">Expand all</button>
+  <button type="button" id="collapse">Collapse all</button>
+  <span class="hint">Each node folds — works without a mouse.</span>
+</div>
+
+<main>
+
+<details class="branch" style="--tone:var(--t1)">
+  <summary><span class="tno">TRACK 01</span><span class="tname">Digital Wealth Management</span><span class="badge">Bet 3</span><span class="caret">▸</span>
+    <span class="tline">Avatar advisor in the mobile app — AI transacts vanilla, hands regulated products to an RM</span></summary>
+  <div class="branch-body">
+    <details class="group" open><summary>Why it can win</summary><ul>
+      <li><b>Whitespace confirmed:</b> no Indian bank ships advise + transact + RM-handoff. BoB "Aditi" (May 2024) is service Q&amp;A only.</li>
+      <li>The hybrid split is the <b>legally correct design</b>: bank = AMFI-ARN distributor → suitability-matched "incidental advice" + execution; insurance/HNI advisory → licensed human.</li>
+      <li><span class="k">RBI FRSB 8.05%</span> — IDBI is a designated receiving office → the perfect AI-transacts product.</li>
+    </ul></details>
+    <details class="group"><summary>Decided build</summary><ul>
+      <li>2D <b>Rive/Live2D avatar</b> with emotion states (offline-safe, AMA-approved); HeyGen/D-ID photoreal as a toggle.</li>
+      <li>Voice: <b>Sarvam Saarika ASR + Bulbul v3 TTS</b> (won a 20k-vote Indic blind test); Bhashini = free 22-language scale story.</li>
+      <li><b>Claude on Bedrock</b> in a strict-schema tool loop: <span class="k">get_portfolio</span> <span class="k">recommend</span> <span class="k">execute_SIP</span> <span class="k">create_rm_lead</span> <span class="k">log_suitability</span>.</li>
+      <li>Rules pick the scheme shortlist (auditable); LLM-RAG explains it; live NAVs free via <span class="k">AMFI NAVAll.txt</span>.</li>
+      <li>Account Aggregator mock shows outside-bank MF/NPS holdings (CDSL, NSDL, CRAs are live FIPs).</li>
+    </ul></details>
+    <details class="group"><summary>Compliance spine</summary><ul>
+      <li><b>SEBI Feb 2025:</b> the bank is fully liable for AI output → suitability log + audit JSON + guardrails shown on screen.</li>
+      <li>IRDAI: only licensed Specified Persons solicit insurance → AI does needs-analysis + books the RM.</li>
+    </ul></details>
+    <details class="group"><summary>Demo (7 min)</summary><ul>
+      <li>Ravi (mass, Hindi, voice) executes a ₹5k SIP → literacy bite · Meera (HNI) AA holdings → FRSB + insurance RM lead on console · guardrail refuses "guarantee me 15%".</li>
+      <li><span class="con">Risk:</span> most moving parts of any track — cut to the 3-persona script ruthlessly.</li>
+    </ul></details>
+  </div>
+</details>
+
+<details class="branch" style="--tone:var(--t2)">
+  <summary><span class="tno">TRACK 02</span><span class="tname">Prospect Assist AI</span><span class="badge">Bet 4</span><span class="caret">▸</span>
+    <span class="tline">Behaviour-driven retail-lending leads — interest × repayment capacity, beyond FOIR</span></summary>
+  <div class="branch-body">
+    <details class="group" open><summary>The reframe that wins the room</summary><ul>
+      <li>No model converts a cold base at 30%. <b>&gt;30% = precision@k on the qualified list handed to RMs</b> — pre-approved leads already convert 20–40%.</li>
+      <li>Funnel economics: "1% means 100 calls per loan; we make it 3." Cost per loan <span class="k">₹9,800 → ₹700</span>.</li>
+    </ul></details>
+    <details class="group"><summary>Decided build — three visible models</summary><ul>
+      <li><b>Intent</b> (LightGBM + clickstream: EMI-calculator params, session recency) · <b>Capacity</b> (need/want/luxury ledger → surplus → eligible EMI) · <b>Risk gate</b> (soft-pull, zero CIBIL impact).</li>
+      <li>Fusion <span class="k">LQS = P(intent) × capacity_fit × (1−PD)</span> with SHAP reasons an officer can say aloud.</li>
+      <li>Income engines: salary detector · gig payouts (Swiggy/Uber cadence) · UPI turnover × industry-margin priors.</li>
+      <li>Trigger library: rent→EMI pitch, marriage spend cluster, salary jump, broker/property-portal fees.</li>
+      <li><span class="pro">Flex:</span> uplift modelling — target <i>persuadables</i>, Qini curve on the slide.</li>
+    </ul></details>
+    <details class="group"><summary>Compliance spine</summary><ul>
+      <li><b>DPDP:</b> profiling ≠ "legitimate use" → separate marketing-consent toggle + purpose-tagged consent ledger in the UI.</li>
+      <li>RBI Digital Lending Directions 2025: income/occupation assessed, no dark patterns; geolocation coarsened to pincode.</li>
+    </ul></details>
+    <details class="group"><summary>Demo (6 min)</summary><ul>
+      <li>Raw statement → categorized ledger → capacity card → intent fires vs window-shopper contrast → risk gate finds a hidden EMI → lead card + RM feedback loop → metrics wall.</li>
+    </ul></details>
+  </div>
+</details>
+
+<details class="branch" style="--tone:var(--t3)">
+  <summary><span class="tno">TRACK 03</span><span class="tname">MSME Financial Health Score</span><span class="badge">Bet 5</span><span class="caret">▸</span>
+    <span class="tline">Alternate-data Health Card for credit-invisible MSMEs — explainability mandatory</span></summary>
+  <div class="branch-body">
+    <details class="group" open><summary>Positioning</summary><ul>
+      <li>The gap: only ~19% of MSME credit demand met formally; <span class="k">₹69–80 lakh crore</span> unmet.</li>
+      <li>"CMR can't see her. <b>FIT Rank</b> scores her 1–10 in a black box. We hand the underwriter the <i>why</i>" — 7 rails vs FIT's 3.</li>
+      <li><span class="con">Warning:</span> most crowded track — expect a dozen GST+statement scoring demos.</li>
+    </ul></details>
+    <details class="group"><summary>Decided build</summary><ul>
+      <li><b>6 pillars</b> (sales, cash-flow, compliance, employment, concentration, utility-verified activity) → composite <span class="k">300–900</span> → RAG + go/review/no-go. Never auto-reject.</li>
+      <li><b>Hybrid two-layer:</b> WoE scorecard (regulator-native) + XGBoost/SHAP challenger; disagreement auto-escalates to the human.</li>
+      <li>Fraud cross-checks before scoring: GST turnover ≠ bank credits · flat kWh vs doubling sales · circular counterparties.</li>
+      <li><b>Coverage badge</b> answers "SMS alone is not enough" structurally; what-if simulator empowers the underwriter.</li>
+      <li>Rails: GSTN live as AA FIP (mock to ReBIT schema) · Setu/Finvu sandboxes genuinely usable · public GSTIN lookup as the one live API.</li>
+    </ul></details>
+    <details class="group"><summary>Ecosystem numbers for the pitch</summary><ul>
+      <li>ULI: <span class="k">64 lenders · 136+ data services · ₹27,000 cr</span> · AA: <span class="k">₹1.6 lakh cr loans</span> · GeM Sahay: 7-minute cash-flow loans.</li>
+      <li>FREE-AI 7-sutra → feature table verbatim on a slide.</li>
+    </ul></details>
+    <details class="group"><summary>Demo (6 min)</summary><ul>
+      <li>NTC weaver → consent → rails light up → card 668/900 → reason-code drill-down to exact GST filing dates → what-if → stressed Amber case → fraud case auto-flagged.</li>
+    </ul></details>
+  </div>
+</details>
+
+<details class="branch" style="--tone:var(--t4)">
+  <summary><span class="tno">TRACK 04</span><span class="tname">Default Prediction (EWS)</span><span class="badge">Bet 2</span><span class="caret">▸</span>
+    <span class="tline">12-month-ahead MSME stress flags on running accounts — RAG buckets in loan-officer language</span></summary>
+  <div class="branch-body">
+    <details class="group" open><summary>The framing that wins the room</summary><ul>
+      <li>This is a <b>behavioural PD / Early-Warning problem</b>: SMA-0/1/2 ↔ Green/Amber/Red; "12 months ahead" <i>is</i> the IFRS-9 / Ind AS 109 12-month PD → dual-use as SICR staging engine.</li>
+      <li>16–22% = hit-rate of today's rule-based alerts. <b>The 90% trap:</b> at 5% default rate, "no default for everyone" is 95% accurate.</li>
+      <li>Honest reframe: <b>"~90% of future defaulters already in Red+Amber, at an alert budget you choose."</b></li>
+    </ul></details>
+    <details class="group"><summary>Decided build</summary><ul>
+      <li><b>LightGBM champion</b> (class-weighted, monotonic constraints) + WoE-scorecard and survival challengers; <b>per-segment isotonic calibration onto one master scale</b> — exactly the brief's "hybrid interpretation".</li>
+      <li>Point-in-time features (≤ T), label = NPA in (T, T+12], <b>out-of-time split</b> — leakage is the credibility killer.</li>
+      <li>Features cite their RBI-EWS ancestors: utilization trend, bounces, inward returns, turnover decline, salary-batch drift, GSTR lapses, e-courts §138, adverse media.</li>
+      <li><b>Unstructured lane:</b> banker call-memos → LLM flags with verbatim evidence quotes — feature, never decision.</li>
+      <li>Governance-in-the-box: model card + validation report (RBI Aug-2024 model-risk draft), PSI monitors, champion–challenger.</li>
+    </ul></details>
+    <details class="group"><summary>Demo (7 min)</summary><ul>
+      <li><b>Hero moment:</b> "Sharda Fabricators" — zero DPD, Green on today's rules; model says <span class="k">Red · PD 22% · ~8 months to stress</span>; fast-forward shows SMA-2 seven months later.</li>
+      <li>Contrast: seasonal business the rule engine false-flags but the model keeps Green.</li>
+      <li>Numbers: ~85–90% capture at a 20%-of-book alert budget, ~4× lift, calibration curve.</li>
+    </ul></details>
+  </div>
+</details>
+
+<details class="branch" style="--tone:var(--t5)">
+  <summary><span class="tno">TRACK 05</span><span class="tname">Open Innovation — ReconPilot</span><span class="badge">★ Bet 1</span><span class="caret">▸</span>
+    <span class="tline">Agentic UPI reconciliation + exception-resolution desk — the invited theme, built to spec</span></summary>
+  <div class="branch-body">
+    <details class="group" open><summary>Why this is the best bet</summary><ul>
+      <li>Mentors <b>explicitly invited</b> reconciliation & KYC — the hidden rubric. The open field will be unfocused chatbots.</li>
+      <li>Scale: UPI hit <span class="k">23.2B txns / ₹29.9T in May 2026</span> (~738M/day); banks run 3-way recon: CBS vs switch vs NPCI files.</li>
+      <li><b>RBI TAT circular monetizes speed:</b> UPI auto-reversal T+1, then <span class="k">₹100/day</span> automatic compensation — a live penalty clock in the demo.</li>
+      <li>Vendor gap: SmartStream/Cointab/Osfin <i>match</i>; humans still <i>resolve</i>. The agentic exceptions desk is white space.</li>
+      <li>Precedent: <b>MuleHunter.AI</b> — the regulator itself ships ops-AI (23 banks live per RTI).</li>
+    </ul></details>
+    <details class="group"><summary>Decided build</summary><ul>
+      <li>S3 → Glue normalization → deterministic match (RRN+amount) → ML fuzzy tail → DynamoDB break register with ageing + TAT clocks.</li>
+      <li><b>Bedrock agent</b> tools: <span class="k">query_cbs</span> <span class="k">query_npci_record</span> <span class="k">draft_adjustment_voucher</span> <span class="k">compute_tat_compensation</span> — reasoning trace persisted, human approves everything.</li>
+      <li>Natural-language rule authoring: ops prose → matching-rule JSON, dry-run tested.</li>
+      <li><b>Finacle integration:</b> IDBI's verified CBS — file-based day-1, zero core surgery.</li>
+      <li>Roadmap panes: KYCOps copilot (re-KYC wave crests 30 Jun 2026; 95–99% AML false positives; MNRL triage) · CircularSense.</li>
+    </ul></details>
+    <details class="group"><summary>Demo (6 min)</summary><ul>
+      <li>3 mock settlement files, 50 seeded breaks → 99.7% auto-match in seconds → agent resolves 3 breaks live in recon vocabulary (TCC/RET, suspense GL) → supervisor approves → FTE-hours + penalty-₹ saved.</li>
+      <li><span class="pro">Close:</span> "works on your real files in a 2-week PoC."</li>
+    </ul></details>
+  </div>
+</details>
+
+<details class="branch" style="--tone:var(--tc)">
+  <summary><span class="tno">ALL TRACKS</span><span class="tname">Common Ground</span><span class="caret">▸</span>
+    <span class="tline">Judging themes, regulatory spine, and the assets to build once</span></summary>
+  <div class="branch-body">
+    <details class="group" open><summary>Say these in any track</summary><ul>
+      <li>Human-in-the-loop <b>architected</b> (override queues, feedback retraining) — not asserted.</li>
+      <li>Explainability three ways: model (scorecard/SHAP) · decision (reason codes) · narrative (LLM phrases, never decides).</li>
+      <li>Multi-source cross-validation — the AMA's "SMS alone is not enough".</li>
+      <li>₹-quantified ROI on every slide · "IDBI has no AI in production" → be the credible <i>first</i>: governed, auditable, fallback-equipped.</li>
+    </ul></details>
+    <details class="group"><summary>Regulatory spine</summary><ul>
+      <li><b>RBI FREE-AI</b> (13 Aug 2025): 7 sutras — Trust · People First · Innovation · Fairness · Accountability · Explainability · Resilience — mapped to features.</li>
+      <li>DPDP Rules (notified 14 Nov 2025, phased to May 2027) · RBI model-risk draft (Aug 2024) · Digital Lending Directions 2025.</li>
+    </ul></details>
+    <details class="group"><summary>Build-once assets</summary><ul>
+      <li>Synthetic Indian statement/UPI generator (personas, VPA realism, seasonality) — feeds T2/T3/T4, useful everywhere.</li>
+      <li>Bedrock tool-loop skeleton with strict schemas + audit log + Guardrails · scorecard+SHAP pipeline · React dashboard shell.</li>
+    </ul></details>
+  </div>
+</details>
+
+</main>
+
+<footer>
+  <h2>Reading order in <code>docs/</code></h2>
+  <ol>
+    <li><code>00-hackathon-overview.md</code> — rules, prizes, judging signals</li>
+    <li><code>01-track-comparison-and-recommendation.md</code> — pick the track</li>
+    <li><code>track-0X-*.md</code> — the curated plan per track</li>
+    <li><code>research/*.md</code> — full cited dossiers + regulatory & India-stack references</li>
+  </ol>
+</footer>
+</div>
+
+<script>
+  const all = document.querySelectorAll("details");
+  document.getElementById("expand").addEventListener("click", () => all.forEach(d => d.open = true));
+  document.getElementById("collapse").addEventListener("click", () => all.forEach(d => d.open = false));
+</script>
