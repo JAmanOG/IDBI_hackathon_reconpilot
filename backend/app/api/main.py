@@ -13,7 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from app.config import (ASSISTED_MINUTES_PER_BREAK, DATA_DIR, DEFAULT_MATCH_RULES,
+from app.config import (ASSISTED_MINUTES_PER_BREAK, BOOTSTRAP_CLEAN, DATA_DIR,
+                        DEFAULT_MATCH_RULES, IS_SERVERLESS,
                         MANUAL_MINUTES_PER_BREAK, RULES_PATH,
                         TAT_COMPENSATION_PER_DAY_INR)
 from app.agent.agent import investigate
@@ -27,6 +28,25 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 _conn = store.connect()
 _legs_cache: dict = {}
+
+
+@app.on_event("startup")
+def bootstrap_if_empty():
+    """Serverless instances start with an empty /tmp — self-initialize.
+
+    The generator is seeded, so every cold instance deterministically
+    reproduces the same book and the same 75 breaks.
+    """
+    if not IS_SERVERLESS:
+        return
+    if (DATA_DIR / "npci_settlement.csv").exists() and store.latest_run(_conn):
+        return
+    generate(DATA_DIR, n_clean=BOOTSTRAP_CLEAN, seed=2026)
+    npci, switch, cbs = _load_legs()
+    rules = get_rules()
+    stats, breaks = run_recon(npci, switch, cbs, rules)
+    store.save_run(_conn, {**stats.__dict__, "elapsed_ms": 0,
+                           "auto_match_rate": stats.auto_match_rate}, rules, breaks)
 
 
 def get_rules() -> dict:

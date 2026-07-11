@@ -1,0 +1,7 @@
+backend/.venv
+backend/data
+backend/data-test
+frontend/node_modules
+*.png
+*.pptx
+Dockerfile
